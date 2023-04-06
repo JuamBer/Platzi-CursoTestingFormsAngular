@@ -7,9 +7,8 @@ import {
 import { generateManyProducts } from 'src/app/models/product.mock';
 import { ProductsService } from 'src/app/services/product.service';
 
-import { By } from '@angular/platform-browser';
 import { ValueService } from 'src/app/services/value.service';
-import { queryById } from 'src/testing';
+import { getText, queryById } from 'src/testing';
 import {
   mockObservable,
   observableError,
@@ -131,11 +130,11 @@ describe('ProductsComponent', () => {
       btnDe.triggerEventHandler('click', null);
       tick();
       fixture.detectChanges();
-      const rtaDe = fixture.debugElement.query(By.css('p.rta'));
+      const textRta = getText(fixture, 'rta');
       // Assert
       expect(component.rta).toEqual(mockMsg);
       expect(valueService.getPromiseValue).toHaveBeenCalled();
-      expect(rtaDe.nativeElement.textContent).toEqual(mockMsg);
+      expect(textRta).toEqual(mockMsg);
     }));
   });
 });
