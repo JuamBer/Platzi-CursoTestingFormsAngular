@@ -16,7 +16,7 @@ export function query<T>(fixture: ComponentFixture<T>, selector: string) {
   return debugElement;
 }
 export function queryById<T>(fixture: ComponentFixture<T>, selector: string) {
-  return query(fixture, `[testId="${selector}"`);
+  return query(fixture, `[testId="${selector}"]`);
 }
 
 export function queryAll<T>(fixture: ComponentFixture<T>, selector: string) {

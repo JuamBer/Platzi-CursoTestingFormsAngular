@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from 'src/app/services/user.service';
+import { getText, query } from 'src/testing';
 import { RegisterFormComponent } from './register-form.component';
 
 describe('RegisterFormComponent', () => {
@@ -41,6 +42,25 @@ describe('RegisterFormComponent', () => {
 
     component.emailField?.setValue('');
     expect(component.emailField?.invalid).withContext('empty').toBeTruthy();
+  });
+
+  it('should the emailField be invalid from ui', () => {
+    const inputDe = query(fixture, 'input#email');
+    const inputEl: HTMLInputElement = inputDe.nativeElement;
+
+    inputEl.value = 'esto no es un correo';
+    inputEl.dispatchEvent(new Event('input'));
+    inputEl.dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    const emailFieldEmail = getText(fixture, 'emailFieldEmail');
+
+    expect(component.emailField?.invalid)
+      .withContext('wrong email')
+      .toBeTruthy();
+
+    // component.emailField?.setValue('');
+    // expect(component.emailField?.invalid).withContext('empty').toBeTruthy();
+    expect(emailFieldEmail).toBe(`*It's not a email`);
   });
 
   it('should the passwordField be invalid', () => {

@@ -34,8 +34,14 @@
             [attr.aria-invalid]="emailField?.touched ? emailField?.invalid : ''"
           />
           <ng-container *ngIf="emailField?.touched && emailField?.errors">
-            <small *ngIf="emailField?.hasError('required')">*Required</small>
-            <small *ngIf="emailField?.hasError('email')"
+            <small
+              testId="emailFieldRequired"
+              *ngIf="emailField?.hasError('required')"
+              >*Required</small
+            >
+            <small
+              testId="emailFieldEmail"
+              *ngIf="emailField?.hasError('email')"
               >*It's not a email</small
             >
           </ng-container>
@@ -70,7 +76,7 @@
         <input
           type="password"
           id="confirmPassword"
-          name="email"
+          name="confirmPassword"
           placeholder="Confirm password"
           formControlName="confirmPassword"
           [attr.aria-invalid]="
