@@ -9,6 +9,7 @@ import { ProductsService } from 'src/app/services/product.service';
 
 import { By } from '@angular/platform-browser';
 import { ValueService } from 'src/app/services/value.service';
+import { queryById } from 'src/testing';
 import {
   mockObservable,
   observableError,
@@ -123,7 +124,9 @@ describe('ProductsComponent', () => {
       // Arrange
       const mockMsg = 'my mock string';
       valueService.getPromiseValue.and.returnValue(Promise.resolve(mockMsg));
-      const btnDe = fixture.debugElement.query(By.css('.btn-promise'));
+      // const btnDe = fixture.debugElement.query(By.css('.btn-promise'));
+      const btnDe = queryById(fixture, 'btn-promise');
+
       // Act
       btnDe.triggerEventHandler('click', null);
       tick();
