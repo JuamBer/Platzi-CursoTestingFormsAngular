@@ -12,6 +12,7 @@ import {
   clickElement,
   getText,
   mockObservable,
+  observableError,
   observableSuccess,
 } from 'src/testing';
 import { setCheckboxValue, setInputValue } from 'src/testing/forms';
@@ -151,6 +152,27 @@ describe('RegisterFormComponent', () => {
     tick(); // exec pending tasks
     fixture.detectChanges();
     expect(component.status).toEqual('success');
+    expect(component.form.valid).toBeTruthy();
+    expect(usersServiceSpy.create).toHaveBeenCalled();
+  }));
+
+  it('should send the form from UI but with error in the service', fakeAsync(() => {
+    setInputValue(fixture, 'input#name', 'Nico');
+    setInputValue(fixture, 'input#email', 'nico@gmil.com');
+    setInputValue(fixture, 'input#password', '12121212');
+    setInputValue(fixture, 'input#confirmPassword', '12121212');
+    setCheckboxValue(fixture, 'input#terms', true);
+    usersServiceSpy.create.and.returnValue(observableError());
+    // Act
+    // component.register(new Event('submit'));
+    clickElement(fixture, 'btn-submit', true);
+    // query(fixture, 'form').triggerEventHandler('ngSubmit', new Event('submit'));
+    fixture.detectChanges();
+    expect(component.status).toEqual('loading');
+
+    tick(); // exec pending tasks
+    fixture.detectChanges();
+    expect(component.status).toEqual('error');
     expect(component.form.valid).toBeTruthy();
     expect(usersServiceSpy.create).toHaveBeenCalled();
   }));
