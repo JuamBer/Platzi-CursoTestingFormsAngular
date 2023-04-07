@@ -1,9 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { generateOneUser } from 'src/app/models/user.mock';
 import { UsersService } from 'src/app/services/user.service';
-import { getText, mockObservable } from 'src/testing';
+import { getText, mockObservable, observableSuccess } from 'src/testing';
 import { setInputValue } from 'src/testing/forms';
 import { RegisterFormComponent } from './register-form.component';
 
@@ -101,4 +106,25 @@ describe('RegisterFormComponent', () => {
     expect(component.form.valid).toBeTruthy();
     expect(usersServiceSpy.create).toHaveBeenCalled();
   });
+
+  it('should send the form successfully and "loading" => "success"', fakeAsync(() => {
+    component.form.patchValue({
+      name: 'Nico',
+      email: 'nico@gmil.com',
+      password: '12121212',
+      confirmPassword: '12121212',
+      checkTerms: true,
+    });
+    const mockUser = generateOneUser();
+    usersServiceSpy.create.and.returnValue(observableSuccess(mockUser));
+    // Act
+    component.register(new Event('submit'));
+    fixture.detectChanges();
+    expect(component.status).toEqual('loading');
+    tick(); // exec pending tasks
+    fixture.detectChanges();
+    expect(component.status).toEqual('success');
+    expect(component.form.valid).toBeTruthy();
+    expect(usersServiceSpy.create).toHaveBeenCalled();
+  }));
 });

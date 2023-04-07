@@ -15,7 +15,14 @@ export class RegisterFormComponent implements OnInit {
     {
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6), MyValidators.validPassword]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          MyValidators.validPassword,
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
       checkTerms: [false, [Validators.requiredTrue]],
     },
@@ -23,20 +30,20 @@ export class RegisterFormComponent implements OnInit {
       validators: MyValidators.matchPasswords,
     }
   );
+  status: 'loading' | 'success' | 'error' | 'init' = 'init';
 
-  constructor(
-    private fb: FormBuilder,
-    private usersService: UsersService
-  ) {}
+  constructor(private fb: FormBuilder, private usersService: UsersService) {}
 
   ngOnInit(): void {}
 
   register(event: Event) {
     event.preventDefault();
     if (this.form.valid) {
+      this.status = 'loading';
+
       const value = this.form.value;
-      this.usersService.create(value)
-      .subscribe((rta) => {
+      this.usersService.create(value).subscribe((rta) => {
+        this.status = 'success';
         console.log(rta);
       });
     } else {
