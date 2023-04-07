@@ -8,8 +8,13 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { generateOneUser } from 'src/app/models/user.mock';
 import { UsersService } from 'src/app/services/user.service';
-import { getText, mockObservable, observableSuccess } from 'src/testing';
-import { setInputValue } from 'src/testing/forms';
+import {
+  clickElement,
+  getText,
+  mockObservable,
+  observableSuccess,
+} from 'src/testing';
+import { setCheckboxValue, setInputValue } from 'src/testing/forms';
 import { RegisterFormComponent } from './register-form.component';
 
 describe('RegisterFormComponent', () => {
@@ -106,6 +111,28 @@ describe('RegisterFormComponent', () => {
     expect(component.form.valid).toBeTruthy();
     expect(usersServiceSpy.create).toHaveBeenCalled();
   });
+
+  it('should send the form successfully from UI', fakeAsync(() => {
+    setInputValue(fixture, 'input#name', 'Nico');
+    setInputValue(fixture, 'input#email', 'nico@gmil.com');
+    setInputValue(fixture, 'input#password', '12121212');
+    setInputValue(fixture, 'input#confirmPassword', '12121212');
+    setCheckboxValue(fixture, 'input#terms', true, false);
+    const mockUser = generateOneUser();
+    usersServiceSpy.create.and.returnValue(observableSuccess(mockUser));
+    // Act
+    // component.register(new Event('submit'));
+    clickElement(fixture, 'btn-submit', true);
+    // query(fixture, 'form').triggerEventHandler('ngSubmit', new Event('submit'));
+    fixture.detectChanges();
+    expect(component.status).toEqual('loading');
+
+    tick(); // exec pending tasks
+    fixture.detectChanges();
+    expect(component.status).toEqual('success');
+    expect(component.form.valid).toBeTruthy();
+    expect(usersServiceSpy.create).toHaveBeenCalled();
+  }));
 
   it('should send the form successfully and "loading" => "success"', fakeAsync(() => {
     component.form.patchValue({

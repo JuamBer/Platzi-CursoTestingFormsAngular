@@ -22,3 +22,24 @@ export function setInputValue<T>(
   element.dispatchEvent(new Event('blur'));
   fixture.detectChanges();
 }
+
+export function setCheckboxValue<T>(
+  fixture: ComponentFixture<T>,
+  selector: string,
+  value: boolean,
+  withTestId: boolean = false
+) {
+  let debugElement: DebugElement;
+
+  if (withTestId) {
+    debugElement = queryById(fixture, selector);
+  } else {
+    debugElement = query(fixture, selector);
+  }
+
+  const element: HTMLInputElement = debugElement.nativeElement;
+  element.checked = value;
+  element.dispatchEvent(new Event('change'));
+  element.dispatchEvent(new Event('blur'));
+  fixture.detectChanges();
+}
